@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import marked from 'marked';
 import '../../static/css/article/addArticle.css';
 import { Row, Col, Input, Select, Button, DatePicker } from 'antd';
+import '../../static/css/article/markdown.scss';
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -76,7 +77,7 @@ const AddArticle: React.FC<{}> = () => {
               />
           </Col>
           <Col span={12}>
-            <div className="show-html"
+            <div className="show-html markdown-body"
               dangerouslySetInnerHTML={{__html: mdContent}}
             >
             </div>
