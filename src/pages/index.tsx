@@ -1,15 +1,17 @@
 import { Layout, Menu, Breadcrumb, Row } from 'antd';
 import {
   DesktopOutlined,
-  PieChartOutlined,
   DashboardOutlined,
   FileOutlined,
   TeamOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import React ,{ useState } from 'react';
+import { Route } from 'react-router-dom';
 import '../static/css/index.css';
 import Footer from '../components/GlobalFooter/index';
+import AddArticle from './article/addArticle';
+
 
 const Index: React.FC <{}> = () => {
   const { Header, Content, Sider } = Layout;
@@ -73,7 +75,10 @@ const Index: React.FC <{}> = () => {
             <Breadcrumb.Item>DashBoard</Breadcrumb.Item>
           </Breadcrumb>
           <div className="site-layout-background" style={{ padding: 24, minHeight: 360 }}>
-            Bill is a cat.
+            <div>
+              <Route path="/index/" exact component={AddArticle}>
+              </Route>
+            </div>
           </div>
         </Content>
         <Row align="middle" justify="center">
