@@ -1,9 +1,12 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
-import { Button, Card, Col, Input, Row } from 'antd';
+import { Button, Card, Col, Input, message, Row } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone, UserOutlined, LockOutlined } from '@ant-design/icons';
 import Footer from '../components/GlobalFooter/index';
 import '../static/css/login.css';
+import axios from 'axios';
+import servicePath from '../config/apiUrl';
+import { request } from '../utils/axios';
 
 const Login: React.FC <{}> = () => {
 
@@ -15,9 +18,33 @@ const Login: React.FC <{}> = () => {
 
   const handleLogin = (): void => {
     setIsLoading(true);
-    setTimeout(() => {
+    if (!userName || !password) {
       setIsLoading(false);
-    }, 1500);
+      message.error('请完善登录信息');
+      return;
+    }
+    let param = {
+      'accountName': userName,
+      'password': password,
+    }
+    request({
+      url: servicePath.login,
+      method: 'POST',
+      params: param
+    }).then((res) => {
+      console.log('res: ', res);
+    }).catch((err) => {
+      console.log('err: ', err);
+    });
+    // axios({
+    //   method: 'POST',
+    //   url: servicePath.login,
+    //   data: param,
+    //   // withCredentials: true,
+    // }).then((res) => {
+    //   console.log('res: ', res);
+    //   setIsLoading(false);
+    // })
   }
 
   return (

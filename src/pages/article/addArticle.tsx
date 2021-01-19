@@ -124,8 +124,7 @@ const AddArticle: React.FC<{}> = () => {
             <div 
               className="introduce-html"
               dangerouslySetInnerHTML={{__html: introductionHtml}}
-              style={{ marginTop: '1rem' }}>
-
+              style={{ marginTop: '1rem', display: !introductionHtml ? 'none' : '' }}>
             </div>
           </Col>
 
