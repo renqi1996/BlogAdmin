@@ -33,6 +33,7 @@ const Login: React.FC <{}> = () => {
       params: param
     }).then((res) => {
       console.log('res: ', res);
+      sessionStorage.setItem('token', res.data.token);
     }).catch((err) => {
       console.log('err: ', err);
     });

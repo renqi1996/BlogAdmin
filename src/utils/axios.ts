@@ -2,7 +2,7 @@ import axios, { AxiosRequestConfig, Method, AxiosResponse,  } from 'axios';
 
 // 全局设定请求类型
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
-// axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = true;
 axios.defaults.baseURL = '127.0.0.1:3000';
 axios.defaults.timeout = 3000;
 
@@ -29,11 +29,11 @@ axios.interceptors.response.use((response: AxiosResponse): any => {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('userName');
     // 返回首页 重新登录
-    // window.location.href = '/login';
+    window.location.href = '/login';
     return Promise.reject(response);
   }
   // 接口返回失败
-  if (response.status!==200 || response.data.code!==200) {
+  if (response.status > 400) {
     return Promise.reject(response);
   }
   return response;
