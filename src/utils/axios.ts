@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig, Method, AxiosResponse,  } from 'axios';
+import { getCookie, removeCookie } from './tools';
 
 // 全局设定请求类型
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';
@@ -9,12 +10,11 @@ axios.defaults.timeout = 3000;
 // 请求头统一处理
 axios.interceptors.request.use((config: AxiosRequestConfig): AxiosRequestConfig => {
   // token 存放于 cookie/sessionStorage 中，有效时间为 8h
-  // const token = sessionStorage.getItem('token');
+  const token = getCookie('token');
   // if (!token) {
   //   window.location.href = '/login';
-  //   // return config;
   // }
-  // config.headers.Authorization = 'Bearer ' + token;
+  config.headers.Authorization = 'Bearer ' + token;
   return config;
 }, (err) => {
   return Promise.reject(err);
@@ -25,9 +25,7 @@ axios.interceptors.response.use((response: AxiosResponse): any => {
   // Token 过期
   if (response.data.status === 401) {
     // 清空用户信息
-    // document.cookie
-    sessionStorage.removeItem('token');
-    sessionStorage.removeItem('userName');
+    removeCookie('token');
     // 返回首页 重新登录
     window.location.href = '/login';
     return Promise.reject(response);

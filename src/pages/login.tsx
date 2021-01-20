@@ -4,9 +4,10 @@ import { Button, Card, Col, Input, message, Row } from 'antd';
 import { EyeInvisibleOutlined, EyeTwoTone, UserOutlined, LockOutlined } from '@ant-design/icons';
 import Footer from '../components/GlobalFooter/index';
 import '../static/css/login.css';
-import axios from 'axios';
 import servicePath from '../config/apiUrl';
 import { request } from '../utils/axios';
+import { setCookie } from '../utils/tools';
+import { useHistory } from 'react-router-dom';
 
 const Login: React.FC <{}> = () => {
 
@@ -15,6 +16,8 @@ const Login: React.FC <{}> = () => {
   const [isLoding, setIsLoading] = useState<boolean>(false);
   const [ifFocusName, setIfFocusName] = useState<boolean>(false);
   const [ifFocusPWD, setIfFocusPWD] = useState<boolean>(false);
+
+  const history = useHistory();
 
   const handleLogin = (): void => {
     setIsLoading(true);
@@ -33,19 +36,15 @@ const Login: React.FC <{}> = () => {
       params: param
     }).then((res) => {
       console.log('res: ', res);
-      sessionStorage.setItem('token', res.data.token);
+      // 有效期设置为 8h
+      setCookie('token', res.data.data.token, 8 * 60 * 60 * 1000);
+      history.push('/index');
+      // window.location.href = '/index';
     }).catch((err) => {
       console.log('err: ', err);
+      setIsLoading(false);
+      message.error('用户名/密码错误，请重新登录！');
     });
-    // axios({
-    //   method: 'POST',
-    //   url: servicePath.login,
-    //   data: param,
-    //   // withCredentials: true,
-    // }).then((res) => {
-    //   console.log('res: ', res);
-    //   setIsLoading(false);
-    // })
   }
 
   return (

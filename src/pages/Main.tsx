@@ -7,6 +7,7 @@ const Main: React.FC <{}> = () => {
   return (
     <Router>
       <Route>
+        <Route path="/" exact component={Login}></Route>
         <Route path="/login/" exact component={Login}></Route>
         <Route path="/index/" exact component={Index}></Route>
       </Route>
