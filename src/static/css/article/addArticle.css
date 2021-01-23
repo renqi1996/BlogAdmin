@@ -97,3 +97,7 @@
 .radious {
   border-radius: 5px;
 }
+
+.ant-upload.ant-upload-select-picture-card {
+  width: 100%;
+}

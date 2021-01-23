@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import marked from 'marked';
 import '../../static/css/article/addArticle.css';
-import { Row, Col, Input, Select, Button, DatePicker } from 'antd';
+import { Row, Col, Input, Select, Button, Upload, Modal } from 'antd';
+import { LoadingOutlined, PlusOutlined } from '@ant-design/icons';
 import '../../static/css/article/markdown.scss';
 
 const { Option } = Select;
@@ -14,12 +15,14 @@ const AddArticle: React.FC<{}> = () => {
   const [articleContent, setArticleContent] = useState<string>(''); // 文章内容
   const [mdContent, setMdContent] = useState<string>(''); // markdown 编辑内容
   const [introductionMD, setIntroductionMd] = useState<string>(''); // 文章简介
-  const [introductionHtml, setIntroductionHtml] = useState<string>(''); // 文章简介预览
-  const [createDate, setCreateDate] = useState<string>(''); // 文章发布日期
-  const [updateDate, setUpdateDate] = useState<string>(''); // 文章更新日期
   const [typeInfo, setTypeInfo] = useState<Array<number>>([]); // 文章类型
   const [selectedType, setSelectedType] = useState<number>(1); // 文章类型
+  const [imageUrl, setImgUrl] = useState<string>(''); // cover 图片
+  const [imgLoading, steImgLoading] = useState<boolean>(false); // 图片是否正在上传
 
+  const [previewVisible, setPreviewVisible] = useState<boolean>(false); // 图片预览是否可见
+  const [previewTitle, setPreviewTitle] = useState<string>(''); // 图片预览名称
+  
   marked.setOptions({
     renderer: new marked.Renderer(),
     gfm: true,
@@ -38,9 +41,14 @@ const AddArticle: React.FC<{}> = () => {
 
   const IntroductionChange = (e: any): void => {
     setIntroductionMd(e.target.value);
-    let html = marked(e.target.value);
-    setIntroductionHtml(html);
   }
+
+  const uploadButton = (
+    <div style={{ width: '100%' }}>
+      {imgLoading ? <LoadingOutlined /> : <PlusOutlined />}
+      <div style={{ marginTop: 8 }}>Upload Cover here</div>
+    </div>
+  );
 
   return <div>
     <Row gutter={10}>
@@ -120,34 +128,67 @@ const AddArticle: React.FC<{}> = () => {
                 IntroductionChange(e);
               }}
             ></TextArea>
-
-            <div 
-              className="introduce-html"
-              dangerouslySetInnerHTML={{__html: introductionHtml}}
-              style={{ marginTop: '1rem', display: !introductionHtml ? 'none' : '' }}>
-            </div>
           </Col>
 
-          <Col span={12} style={{ marginTop: '1rem' }}>
-            <div className="date-select">
-              <DatePicker 
-                placeholder="发布日期"
-                size="large"
-                className="radious"
-              />
-            </div>
+          <Col span={24} style={{ marginTop: '1rem' }}>
+            封面
           </Col>
-          <Col span={12} style={{ marginTop: '1rem' }}>
-            <div className="date-select">
-              <DatePicker 
-                placeholder="修改日期"
-                size="large"
-                className="radious"
-              />
-            </div>
+          <Col span={24} style={{ marginTop: '1rem' }}>
+            <Upload
+              name="cover"
+              listType="picture-card"
+              showUploadList={false}
+              customRequest={(options) => {
+                const { file } = options;
+                console.log('options: ', file.name);
+                const imgReader = new FileReader();
+                imgReader.readAsDataURL(file);
+                imgReader.onload = (File) => {
+                  File.target?.result && typeof File.target?.result === 'string' && setImgUrl(File.target?.result);
+                  setPreviewTitle(file.name);
+                };
+              }}
+            >
+              {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%', height: '100%' }} /> : uploadButton}
+            </Upload>
+            { imageUrl ? (
+              <Row>
+                <Col span={24} offset={5}>
+                  <Button
+                    size="large"
+                    className="radious"
+                    style={{ marginRight: '1rem' }}
+                    onClick={(): void => {
+                      setPreviewVisible(true);
+                    }}
+                  >
+                    预览图片
+                  </Button>
+                  <Button
+                    size="large"
+                    className="radious"
+                    style={{ marginRight: '1rem' }}
+                    onClick={(): void => {
+                      setImgUrl('');
+                    }}
+                  >
+                    删除图片
+                  </Button>
+                </Col>
+              </Row>
+            ) : null }
+            <Modal
+              visible={previewVisible}
+              title={previewTitle}
+              footer={null}
+              onCancel={(): void => {
+                setPreviewVisible(false);
+              }}
+            >
+              <img alt="example" style={{ width: '100%' }} src={imageUrl} />
+            </Modal>
           </Col>
         </Row>
-
       </Col>
     </Row>
   </div>;
