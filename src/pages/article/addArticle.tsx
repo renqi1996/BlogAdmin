@@ -188,6 +188,9 @@ const AddArticle: React.FC<{}> = () => {
               <img alt="example" style={{ width: '100%' }} src={imageUrl} />
             </Modal>
           </Col>
+        
+          <Col span={24} style={{ marginTop: '1rem' }}>
+          </Col>
         </Row>
       </Col>
     </Row>
